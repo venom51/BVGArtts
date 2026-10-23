@@ -1,0 +1,3 @@
+{% extends 'base.html' %}
+{% block title %}{{ code }} — BVGArtts{% endblock %}
+{% block content %}<section class="section inner-page error-page"><div class="eyebrow">{{ code }} · BVGArtts</div><h1 class="page-title">{{ heading }}.</h1><p class="muted">{{ message }}</p><a class="button primary" href="{{ url_for('home') }}">Back to the gallery ↗</a></section>{% endblock %}

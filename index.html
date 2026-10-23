@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% block title %}BVGArtts — Discover art worth keeping{% endblock %}
+{% block content %}
+<section class="hero">
+  <div class="hero-copy">
+    <div class="eyebrow">Your walls, your world</div>
+    <h1>Make room for art that <em>moves you.</em></h1>
+    <p>Discover original pieces, statement prints, digital creations and special finds from independent artists and trusted art suppliers.</p>
+    <div class="cta-row"><a class="button primary" href="#shop">Explore the collection ↗</a><a class="button secondary" href="#about">Discover BVGArtts</a></div>
+    <div class="hero-small-note"><span class="dot"></span> A growing home for art, artists and curious collectors.</div>
+  </div>
+  <div class="hero-gallery">
+    <img class="hero-img tall" src="https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?auto=format&fit=crop&w=900&q=85" alt="Fine art painting in a gallery" onerror="this.style.display='none'">
+    <img class="hero-img short" src="https://images.unsplash.com/photo-1577083552431-6e5fd01aa342?auto=format&fit=crop&w=700&q=85" alt="Colorful contemporary artwork" onerror="this.style.display='none'">
+    <div class="image-caption">Find the piece that feels like home.</div>
+  </div>
+</section>
+<div class="quick-facts"><div><strong>Originals</strong><span>one-of-a-kind pieces</span></div><div><strong>Prints</strong><span>art for your walls</span></div><div><strong>Digital art</strong><span>modern creations</span></div><div><strong>Curated finds</strong><span>for curious collectors</span></div></div>
+
+<section class="section" id="shop">
+  <div class="section-heading"><div><div class="eyebrow">The BVGArtts edit</div><h2>Find your next favourite.</h2></div><p>Explore the gallery, find a piece you connect with, and add it to your bag.</p></div>
+  <form class="search-filter" action="{{ url_for('home') }}#shop" method="get">
+    <label class="search-field"><span>⌕</span><input type="search" name="q" value="{{ search_query }}" placeholder="Search art, artists or styles…" aria-label="Search art"></label>
+    <div class="filter-row">
+      <a class="filter-pill {{ 'active' if selected_category == 'All' else '' }}" href="{{ url_for('home', q=search_query) }}#shop">All art</a>
+      {% for category in categories %}<a class="filter-pill {{ 'active' if selected_category == category else '' }}" href="{{ url_for('home', q=search_query, category=category) }}#shop">{{ category }}{% if category == 'Original' %}s{% endif %}</a>{% endfor %}
+      <button class="search-submit" type="submit">Search</button>
+    </div>
+  </form>
+  <div class="product-grid">
+    {% for artwork in artworks %}
+    <article class="product-card">
+      <div class="product-image-wrap">
+        {% if artwork.image_url %}<img src="{{ artwork.image_url }}" alt="{{ artwork.title }} artwork" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='grid'">{% endif %}
+        <div class="image-fallback" {% if artwork.image_url %}style="display:none"{% endif %}><span>✳</span><small>BVGArtts</small></div>
+        <span class="product-badge">{{ artwork.category }}</span>
+      </div>
+      <div class="product-info">
+        <h3>{{ artwork.title }}</h3><p class="artist-name">by {{ artwork.artist }}</p>
+        {% if artwork.description %}<p class="product-description">{{ artwork.description }}</p>{% endif %}
+        <div class="product-bottom"><span class="price">{{ artwork.price|naira }}</span>
+          {% if current_user %}<form method="post" action="{{ url_for('add_to_cart', artwork_id=artwork.id) }}"><input type="hidden" name="csrf_token" value="{{ csrf_token }}"><input type="hidden" name="return_to" value="{{ request.full_path if request.query_string else request.path }}"><button class="add-button" type="submit">+ Add to bag</button></form>
+          {% else %}<a class="add-button" href="{{ url_for('login', next=url_for('home') + '#shop') }}">Log in to buy</a>{% endif %}
+        </div>
+      </div>
+    </article>
+    {% else %}
+      <div class="empty-state"><div>◌</div><h3>No artwork found</h3><p>Try a different search or choose another category.</p><a class="button secondary" href="{{ url_for('home') }}#shop">Show all artwork</a></div>
+    {% endfor %}
+  </div>
+  {% if not current_user %}<div class="account-banner"><div><strong>Want to collect something?</strong><span>Create a free BVGArtts account to add artworks to your bag and submit orders.</span></div><a class="button primary" href="{{ url_for('signup') }}">Create your account ↗</a></div>{% endif %}
+</section>
+<section class="story-section" id="about">
+  <div class="story-copy"><div class="eyebrow">Art with a point of view</div><h2>Good art makes a space feel like <em>yours.</em></h2><p>BVGArtts brings together fresh voices, timeless pieces and unexpected discoveries. Browse original artwork, prints, digital creations and curated finds in one welcoming place.</p><a class="button primary" href="#shop">Explore the gallery ↗</a></div>
+  <div class="story-art"><img src="https://images.unsplash.com/photo-1541961017774-22349e4a1262?auto=format&fit=crop&w=1000&q=85" alt="Colourful abstract artwork" onerror="this.style.display='none'"><span>Curated for curious minds.</span></div>
+</section>
+<section class="artist-callout" id="collections"><div><div class="eyebrow">For artists & suppliers</div><h2>Have something worth sharing?</h2><p>Artwork listings are managed by the BVGArtts admin team. Contact the team to discuss adding your pieces to the marketplace.</p></div><a class="button secondary" href="mailto:hello@bvgartts.example?subject=BVGArtts%20artist%20enquiry">Artist enquiries ↗</a></section>
+{% endblock %}

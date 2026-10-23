@@ -1,0 +1,6 @@
+{% extends 'base.html' %}
+{% block title %}My orders — BVGArtts{% endblock %}
+{% block content %}
+<section class="section inner-page"><div class="eyebrow">Your account</div><h1 class="page-title">My orders.</h1><p class="muted">Track the progress of your order requests.</p>
+{% if orders %}<div class="orders-list">{% for order in orders %}<article class="order-card"><div class="order-card-head"><div><span class="muted tiny">ORDER #{{ order.id }} · {{ order.created_at.strftime('%d %b %Y, %H:%M') }} UTC</span><h3>{{ order.total|naira }}</h3></div><span class="status-badge {{ order.status|lower|replace(' ','-') }}">{{ order.status }}</span></div><div class="order-items">{% for item in order.items %}<div><span>{{ item.title }} × {{ item.quantity }}</span><strong>{{ (item.price * item.quantity)|naira }}</strong></div>{% endfor %}</div><p class="muted small-text">Delivery: {{ order.address }} · Contact: {{ order.phone }}</p></article>{% endfor %}</div>{% else %}<div class="empty-state"><div>▤</div><h3>No orders yet</h3><p>Your orders will show up here after you submit a request.</p><a class="button primary" href="{{ url_for('home') }}#shop">Explore artwork ↗</a></div>{% endif %}</section>
+{% endblock %}

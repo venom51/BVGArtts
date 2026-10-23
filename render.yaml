@@ -1,0 +1,25 @@
+services:
+  - type: web
+    name: bvgar-tts
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn app:app
+    healthCheckPath: /
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: bvgar-tts-db
+          property: connectionString
+      - key: SECRET_KEY
+        generateValue: true
+      - key: COOKIE_SECURE
+        value: "true"
+      - key: ADMIN_USERS_JSON
+        sync: false
+
+databases:
+  - name: bvgar-tts-db
+    databaseName: bvgar_tts
+    user: bvgar_tts_user
+    plan: free

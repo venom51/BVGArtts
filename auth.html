@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block title %}{{ 'Create account' if mode == 'signup' else 'Log in' }} — BVGArtts{% endblock %}
+{% block content %}
+<section class="auth-page"><div class="auth-art"><div class="eyebrow">Welcome to BVGArtts</div><h1>Art belongs in every story.</h1><p>Find the pieces you love, keep track of your orders and discover your next favourite.</p><div class="auth-art-image"><img src="https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?auto=format&fit=crop&w=1000&q=85" alt="Artwork on display"></div></div>
+<div class="auth-card"><div class="eyebrow">{{ 'Join the community' if mode == 'signup' else 'Good to see you again' }}</div><h2>{{ 'Create your account' if mode == 'signup' else 'Log in to your account' }}</h2><p class="muted">{{ 'Set up your free BVGArtts customer account.' if mode == 'signup' else 'Enter your username and password to continue.' }}</p>
+<form method="post" class="form-stack"><input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+<label>Username<input name="username" autocomplete="username" required minlength="3" maxlength="24" pattern="[A-Za-z0-9_-]+" placeholder="Choose a username" value="{{ request.form.get('username','') }}"></label>
+<label>Password<input name="password" type="password" autocomplete="{{ 'new-password' if mode == 'signup' else 'current-password' }}" required {% if mode == 'signup' %}minlength="8"{% endif %} placeholder="{{ 'At least 8 characters' if mode == 'signup' else 'Your password' }}"></label>
+{% if mode == 'signup' %}<label>Confirm password<input name="confirm_password" type="password" autocomplete="new-password" required minlength="8" placeholder="Enter the password again"></label><p class="form-note">Customer accounts cannot publish or edit artworks. That access is reserved for administrators.</p>{% endif %}
+<button class="button primary full-button" type="submit">{{ 'Create account' if mode == 'signup' else 'Log in' }} ↗</button></form>
+<p class="auth-switch">{% if mode == 'signup' %}Already have an account? <a href="{{ url_for('login') }}">Log in</a>{% else %}New to BVGArtts? <a href="{{ url_for('signup') }}">Create an account</a>{% endif %}</p></div></section>
+{% endblock %}
